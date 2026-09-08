@@ -84,14 +84,15 @@ jobs:
         working-directory: runmatch-source
         run: node tools/production_engine_sweep.cjs "$GITHUB_WORKSPACE/runmatch-source"
 
-      - name: Build RunMatch debug APK
+            - name: Build RunMatch debug APK
         working-directory: runmatch-source
         env:
           RUNMATCH_BILLING_ENABLED: 'false'
           RUNMATCH_PREMIUM_VERIFY_URL: ''
         run: |
           gradle --no-daemon --stacktrace clean lintDebug testDebugUnitTest assembleDebug
-                - name: Show full Android lint errors
+
+      - name: Show full Android lint errors
         if: failure()
         working-directory: runmatch-source
         shell: bash
@@ -100,10 +101,9 @@ jobs:
           if [ -f app/build/reports/lint-results-debug.txt ]; then
             cat app/build/reports/lint-results-debug.txt
           else
-            find app/build/reports -type f -maxdepth 2 -print || true
+            find app/build/reports -maxdepth 2 -type f -print || true
             grep -RniE "Error:|Fatal:|GestureBackNavigation" app/build/reports || true
           fi
-
       - name: Prepare APK
         shell: bash
         run: |
