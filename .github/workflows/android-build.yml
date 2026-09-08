@@ -84,7 +84,7 @@ jobs:
         working-directory: runmatch-source
         run: node tools/production_engine_sweep.cjs "$GITHUB_WORKSPACE/runmatch-source"
 
-            - name: Build RunMatch debug APK
+      - name: Build RunMatch debug APK
         working-directory: runmatch-source
         env:
           RUNMATCH_BILLING_ENABLED: 'false'
@@ -104,7 +104,9 @@ jobs:
             find app/build/reports -maxdepth 2 -type f -print || true
             grep -RniE "Error:|Fatal:|GestureBackNavigation" app/build/reports || true
           fi
+
       - name: Prepare APK
+        if: success()
         shell: bash
         run: |
           mkdir -p build-artifacts
@@ -115,6 +117,7 @@ jobs:
           ls -lh build-artifacts/
 
       - name: Upload RunMatch APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: RunMatch-v0.30.98-debug-apk
