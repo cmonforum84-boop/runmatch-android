@@ -19,20 +19,16 @@ jobs:
       - name: Rebuild RunMatch source archive
         shell: bash
         run: |
-          cat RunMatch-v0.30.97-source.part00 RunMatch-v0.30.97-source-1.part01 > RunMatch-v0.30.97-source.zip
-
+          cat RunMatch-v0.30.98-source.part00 RunMatch-v0.30.98-source.part01 > RunMatch-v0.30.98-source.zip
           echo "Archive rebuilt:"
-          ls -lh RunMatch-v0.30.97-source.zip
-
-          echo "Checking archive..."
-          unzip -t RunMatch-v0.30.97-source.zip
+          ls -lh RunMatch-v0.30.98-source.zip
+          unzip -t RunMatch-v0.30.98-source.zip
 
       - name: Extract RunMatch sources
         shell: bash
         run: |
           mkdir runmatch-source
-          unzip -q RunMatch-v0.30.97-source.zip -d runmatch-source
-
+          unzip -q RunMatch-v0.30.98-source.zip -d runmatch-source
           test -f runmatch-source/build.gradle
           test -f runmatch-source/settings.gradle
           test -f runmatch-source/app/build.gradle
@@ -69,12 +65,10 @@ jobs:
         run: |
           set -euo pipefail
           count=0
-
           for test_file in $(find tests -maxdepth 1 -type f -name '*_test.js' | sort); do
             node "$test_file"
             count=$((count + 1))
           done
-
           test "$count" -eq 136
           echo "PASS: $count/136 test files"
 
@@ -102,19 +96,16 @@ jobs:
         shell: bash
         run: |
           mkdir -p build-artifacts
-
           cp runmatch-source/app/build/outputs/apk/debug/app-debug.apk \
-             build-artifacts/RunMatch-v0.30.97-debug.apk
-
-          sha256sum build-artifacts/RunMatch-v0.30.97-debug.apk \
-             > build-artifacts/RunMatch-v0.30.97-debug.sha256.txt
-
+             build-artifacts/RunMatch-v0.30.98-debug.apk
+          sha256sum build-artifacts/RunMatch-v0.30.98-debug.apk \
+             > build-artifacts/RunMatch-v0.30.98-debug.sha256.txt
           ls -lh build-artifacts/
 
       - name: Upload RunMatch APK
         uses: actions/upload-artifact@v4
         with:
-          name: RunMatch-v0.30.97-debug-apk
+          name: RunMatch-v0.30.98-debug-apk
           path: build-artifacts/
           if-no-files-found: error
           retention-days: 14
