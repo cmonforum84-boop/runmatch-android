@@ -92,17 +92,19 @@ jobs:
         run: |
           gradle --no-daemon --stacktrace clean lintDebug testDebugUnitTest assembleDebug
 
-      - name: Show full Android lint errors
+            - name: Show full Android lint errors
         if: failure()
         working-directory: runmatch-source
         shell: bash
         run: |
-          echo "===== LINT ERRORS ====="
-          if [ -f app/build/reports/lint-results-debug.txt ]; then
-            cat app/build/reports/lint-results-debug.txt
+          echo "===== FULL LINT ERRORS ====="
+          REPORT="app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt"
+
+          if [ -f "$REPORT" ]; then
+            cat "$REPORT"
           else
-            find app/build/reports -maxdepth 2 -type f -print || true
-            grep -RniE "Error:|Fatal:|GestureBackNavigation" app/build/reports || true
+            echo "Lint report not found at expected path."
+            find app/build -type f \( -name "*lint*.txt" -o -name "*lint*.html" \) -print || true
           fi
 
       - name: Prepare APK
