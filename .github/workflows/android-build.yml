@@ -1,13 +1,59 @@
-
-name: Test RunMatch
+name: RunMatch Android Build
 
 on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     steps:
-      - name: Test
-        run: echo "GitHub Actions fonctionne"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rebuild RunMatch source archive
+        shell: bash
+        run: |
+          cat RunMatch-v0.30.97-source.part00 RunMatch-v0.30.97-source-1.part01 > RunMatch-v0.30.97-source.zip
+
+          echo "Archive rebuilt:"
+          ls -lh RunMatch-v0.30.97-source.zip
+
+          echo "Checking archive..."
+          unzip -t RunMatch-v0.30.97-source.zip
+
+      - name: Extract RunMatch sources
+        shell: bash
+        run: |
+          mkdir runmatch-source
+          unzip -q RunMatch-v0.30.97-source.zip -d runmatch-source
+
+          test -f runmatch-source/build.gradle
+          test -f runmatch-source/settings.gradle
+          test -f runmatch-source/app/build.gradle
+          test -f runmatch-source/AndroidManifest.xml
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 36 components
+        shell: bash
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+         
