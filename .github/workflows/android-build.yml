@@ -91,6 +91,18 @@ jobs:
           RUNMATCH_PREMIUM_VERIFY_URL: ''
         run: |
           gradle --no-daemon --stacktrace clean lintDebug testDebugUnitTest assembleDebug
+                - name: Show full Android lint errors
+        if: failure()
+        working-directory: runmatch-source
+        shell: bash
+        run: |
+          echo "===== LINT ERRORS ====="
+          if [ -f app/build/reports/lint-results-debug.txt ]; then
+            cat app/build/reports/lint-results-debug.txt
+          else
+            find app/build/reports -type f -maxdepth 2 -print || true
+            grep -RniE "Error:|Fatal:|GestureBackNavigation" app/build/reports || true
+          fi
 
       - name: Prepare APK
         shell: bash
