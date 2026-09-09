@@ -92,8 +92,7 @@ jobs:
         run: |
           gradle --no-daemon --stacktrace clean lintDebug testDebugUnitTest assembleDebug
 
-            
-                - name: Show full Android lint errors
+      - name: Show full Android lint errors
         if: failure()
         working-directory: runmatch-source
         shell: bash
@@ -105,7 +104,7 @@ jobs:
             cat "$REPORT"
           else
             echo "Lint report not found at expected path."
-            find app/build -type f \( -name "*lint*.txt" -o -name "*lint*.html" \) -print || true
+            find app/build -type f -name "*lint*.txt" -print || true
           fi
 
       - name: Prepare APK
