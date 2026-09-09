@@ -19,16 +19,16 @@ jobs:
       - name: Rebuild RunMatch source archive
         shell: bash
         run: |
-          cat RunMatch-v0.30.98-source.part00 RunMatch-v0.30.98-source.part01 > RunMatch-v0.30.98-source.zip
+          cat RunMatch-v0.30.99-source.part00 RunMatch-v0.30.99-source.part01 > RunMatch-v0.30.99-source.zip
           echo "Archive rebuilt:"
-          ls -lh RunMatch-v0.30.98-source.zip
-          unzip -t RunMatch-v0.30.98-source.zip
+          ls -lh RunMatch-v0.30.99-source.zip
+          unzip -t RunMatch-v0.30.99-source.zip
 
       - name: Extract RunMatch sources
         shell: bash
         run: |
           mkdir runmatch-source
-          unzip -q RunMatch-v0.30.98-source.zip -d runmatch-source
+          unzip -q RunMatch-v0.30.99-source.zip -d runmatch-source
           test -f runmatch-source/build.gradle
           test -f runmatch-source/settings.gradle
           test -f runmatch-source/app/build.gradle
@@ -113,16 +113,16 @@ jobs:
         run: |
           mkdir -p build-artifacts
           cp runmatch-source/app/build/outputs/apk/debug/app-debug.apk \
-             build-artifacts/RunMatch-v0.30.98-debug.apk
-          sha256sum build-artifacts/RunMatch-v0.30.98-debug.apk \
-             > build-artifacts/RunMatch-v0.30.98-debug.sha256.txt
+             build-artifacts/RunMatch-v0.30.99-debug.apk
+          sha256sum build-artifacts/RunMatch-v0.30.99-debug.apk \
+             > build-artifacts/RunMatch-v0.30.99-debug.sha256.txt
           ls -lh build-artifacts/
 
       - name: Upload RunMatch APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: RunMatch-v0.30.98-debug-apk
+          name: RunMatch-v0.30.99-debug-apk
           path: build-artifacts/
           if-no-files-found: error
           retention-days: 14
