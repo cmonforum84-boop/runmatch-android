@@ -92,7 +92,8 @@ jobs:
         run: |
           gradle --no-daemon --stacktrace clean lintDebug testDebugUnitTest assembleDebug
 
-            - name: Show full Android lint errors
+            
+                - name: Show full Android lint errors
         if: failure()
         working-directory: runmatch-source
         shell: bash
