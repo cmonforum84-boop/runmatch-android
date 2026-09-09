@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-            - name: Rebuild RunMatch source archive
+      - name: Rebuild RunMatch source archive
         shell: bash
         run: |
           cat RunMatch-v0.30.99-source.part00 RunMatch-v0.30.99-source.part01 > RunMatch-v0.30.99-source.zip
