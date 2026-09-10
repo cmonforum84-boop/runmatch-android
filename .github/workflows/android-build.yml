@@ -19,16 +19,14 @@ jobs:
       - name: Rebuild RunMatch source archive
         shell: bash
         run: |
-          cat RunMatch-v0.30.99-source.part00 RunMatch-v0.30.99-source.part01 > RunMatch-v0.30.99-source.zip
-          echo "Archive rebuilt:"
-          ls -lh RunMatch-v0.30.99-source.zip
-          unzip -t RunMatch-v0.30.99-source.zip
+          cat RunMatch-v0.36.00-source.part00 RunMatch-v0.36.00-source.part01 > RunMatch-v0.36.00-source.zip
+          unzip -t RunMatch-v0.36.00-source.zip
 
       - name: Extract RunMatch sources
         shell: bash
         run: |
           mkdir runmatch-source
-          unzip -q RunMatch-v0.30.99-source.zip -d runmatch-source
+          unzip -q RunMatch-v0.36.00-source.zip -d runmatch-source
           test -f runmatch-source/build.gradle
           test -f runmatch-source/settings.gradle
           test -f runmatch-source/app/build.gradle
@@ -69,8 +67,8 @@ jobs:
             node "$test_file"
             count=$((count + 1))
           done
-          test "$count" -eq 136
-          echo "PASS: $count/136 test files"
+          test "$count" -eq 141
+          echo "PASS: $count/141 test files"
 
       - name: Validate RunMatch catalog
         working-directory: runmatch-source
@@ -99,30 +97,21 @@ jobs:
         run: |
           echo "===== FULL LINT ERRORS ====="
           REPORT="app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt"
-
-          if [ -f "$REPORT" ]; then
-            cat "$REPORT"
-          else
-            echo "Lint report not found at expected path."
-            find app/build -type f -name "*lint*.txt" -print || true
-          fi
+          if [ -f "$REPORT" ]; then cat "$REPORT"; else find app/build -type f -name "*lint*.txt" -print || true; fi
 
       - name: Prepare APK
         if: success()
         shell: bash
         run: |
           mkdir -p build-artifacts
-          cp runmatch-source/app/build/outputs/apk/debug/app-debug.apk \
-             build-artifacts/RunMatch-v0.30.99-debug.apk
-          sha256sum build-artifacts/RunMatch-v0.30.99-debug.apk \
-             > build-artifacts/RunMatch-v0.30.99-debug.sha256.txt
-          ls -lh build-artifacts/
+          cp runmatch-source/app/build/outputs/apk/debug/app-debug.apk build-artifacts/RunMatch-v0.36.00-debug.apk
+          sha256sum build-artifacts/RunMatch-v0.36.00-debug.apk > build-artifacts/RunMatch-v0.36.00-debug.sha256.txt
 
       - name: Upload RunMatch APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: RunMatch-v0.30.99-debug-apk
+          name: RunMatch-v0.36.00-debug-apk
           path: build-artifacts/
           if-no-files-found: error
           retention-days: 14
