@@ -19,18 +19,21 @@ jobs:
       - name: Rebuild RunMatch source archive
         shell: bash
         run: |
-          cat RunMatch-v0.36.00-source.part00 RunMatch-v0.36.00-source.part01 > RunMatch-v0.36.00-source.zip
-          unzip -t RunMatch-v0.36.00-source.zip
+          cat RunMatch-v0.55.00-source.part00 RunMatch-v0.55.00-source.part01 > RunMatch-v0.55.00-source.zip
+          unzip -t RunMatch-v0.55.00-source.zip
 
       - name: Extract RunMatch sources
         shell: bash
         run: |
+          rm -rf runmatch-source
           mkdir runmatch-source
-          unzip -q RunMatch-v0.36.00-source.zip -d runmatch-source
+          unzip -q RunMatch-v0.55.00-source.zip -d runmatch-source
           test -f runmatch-source/build.gradle
           test -f runmatch-source/settings.gradle
           test -f runmatch-source/app/build.gradle
           test -f runmatch-source/AndroidManifest.xml
+          grep -q "versionName '0.55.00'" runmatch-source/app/build.gradle
+          grep -q "versionCode 294" runmatch-source/app/build.gradle
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -67,8 +70,8 @@ jobs:
             node "$test_file"
             count=$((count + 1))
           done
-          test "$count" -eq 141
-          echo "PASS: $count/141 test files"
+          test "$count" -eq 163
+          echo "PASS: $count/163 test files"
 
       - name: Validate RunMatch catalog
         working-directory: runmatch-source
@@ -104,14 +107,14 @@ jobs:
         shell: bash
         run: |
           mkdir -p build-artifacts
-          cp runmatch-source/app/build/outputs/apk/debug/app-debug.apk build-artifacts/RunMatch-v0.36.00-debug.apk
-          sha256sum build-artifacts/RunMatch-v0.36.00-debug.apk > build-artifacts/RunMatch-v0.36.00-debug.sha256.txt
+          cp runmatch-source/app/build/outputs/apk/debug/app-debug.apk build-artifacts/RunMatch-v0.55.00-debug.apk
+          sha256sum build-artifacts/RunMatch-v0.55.00-debug.apk > build-artifacts/RunMatch-v0.55.00-debug.sha256.txt
 
       - name: Upload RunMatch APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: RunMatch-v0.36.00-debug-apk
+          name: RunMatch-v0.55.00-debug-apk
           path: build-artifacts/
           if-no-files-found: error
           retention-days: 14
